@@ -5,20 +5,17 @@ import Image from "next/image";
 import randomColor from "randomcolor";
 import { useState } from "react";
 import { feature } from "topojson-client";
-import africa from "../data/africa.json";
+import kenya from "../data/kenya.json";
 
 const padding = 10;
 
-const statePolygons = feature(
-  africa as any,
-  africa.objects.continent_Africa_subunits
-);
+const statePolygons = feature(kenya as any, kenya.objects.County as any);
 
-const features = statePolygons.features.map((polygon) => ({
+const features = statePolygons.features.map((polygon: any) => ({
   ...polygon,
   color: randomColor({
     luminosity: "light",
-    hue: "blue",
+    hue: "red",
   }),
 }));
 
@@ -27,8 +24,7 @@ const Home: NextPage = () => {
   const height = 600;
 
   const [mouse, setMouse] = useState({ x: undefined, y: undefined });
-  const [country, setCountry] = useState({});
-  console.log(features);
+  const [county, setCounty] = useState('');
 
   const projection = geoMercator().fitExtent(
     [
@@ -40,13 +36,12 @@ const Home: NextPage = () => {
 
   const generator = geoPath().projection(projection);
 
-  const mousemove = (e, country: string, type: string) => {
+  const mousemove = (e, county: string) => {
     const mouseCoords = pointer(e);
     setMouse({ x: mouseCoords[0], y: mouseCoords[1] });
 
-    setCountry({ country: country, type: type });
+    setCounty(county);
   };
-  console.log(features);
   return (
     <article className="shadow-md rounded-lg m-4 text-sm border border-gray-200 h-full">
       <h1 className="p-4 border-b border-b-gray-200 font-medium flex items-center gap-x-2">
@@ -56,7 +51,7 @@ const Home: NextPage = () => {
           height={28}
           alt="food-security"
         />
-        African Food Security Index
+        Kenyan County Map
       </h1>
       <section className="py-4 px-8 relative text-xs">
         <svg width={width} height={height}>
@@ -66,25 +61,18 @@ const Home: NextPage = () => {
                 d={generator(polygon)}
                 key={i}
                 fill={polygon.color}
-                className="stroke-[0.75] stroke-white hover:fill-white"
-                onMouseMove={(e) =>
-                  mousemove(
-                    e,
-                    polygon.properties.geounit,
-                    polygon.properties.type
-                  )
-                }
+                className="stroke-[0.75] stroke-white hover:fill-blue-500"
+                onMouseMove={(e) => mousemove(e, polygon.properties.COUNTY)}
               />
             ))}
           </g>
         </svg>
 
         <div
-          className="border absolute shadow-lg min-w-[100px] font-medium -translate-y-full bg-white pointer-events-none divide-y divide-gray-200 transition-all duration-100 rounded-sm"
+          className="border absolute shadow-lg min-w-[100px] font-medium -translate-y-full bg-white pointer-events-none divide-y divide-gray-200 rounded-sm"
           style={{ top: mouse.y, left: mouse.x }}
         >
-          <h1 className="p-4">{country.country}</h1>
-          <p className="p-4 text-gray-600">{country.type}</p>
+          <h1 className="p-4">{county}</h1>
         </div>
       </section>
     </article>
