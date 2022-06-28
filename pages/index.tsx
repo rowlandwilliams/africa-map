@@ -5,17 +5,17 @@ import Image from "next/image";
 import randomColor from "randomcolor";
 import { useState } from "react";
 import { feature } from "topojson-client";
-import kenya from "../data/kenya.json";
+import kenya from "../data/kenya-wards.json";
 
 const padding = 10;
 
-const statePolygons = feature(kenya as any, kenya.objects.County as any);
+const statePolygons = feature(kenya as any, kenya.objects.gadm36_KEN_3 as any);
 
 const features = statePolygons.features.map((polygon: any) => ({
   ...polygon,
   color: randomColor({
     luminosity: "light",
-    hue: "red",
+    hue: "purple",
   }),
 }));
 
@@ -24,7 +24,7 @@ const Home: NextPage = () => {
   const height = 600;
 
   const [mouse, setMouse] = useState({ x: undefined, y: undefined });
-  const [county, setCounty] = useState('');
+  const [county, setCounty] = useState("");
 
   const projection = geoMercator().fitExtent(
     [
@@ -62,7 +62,7 @@ const Home: NextPage = () => {
                 key={i}
                 fill={polygon.color}
                 className="stroke-[0.75] stroke-white hover:fill-blue-500"
-                onMouseMove={(e) => mousemove(e, polygon.properties.COUNTY)}
+                onMouseMove={(e) => mousemove(e, polygon.properties.NAME_3)}
               />
             ))}
           </g>
