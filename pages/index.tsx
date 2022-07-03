@@ -62,7 +62,7 @@ const Home: NextPage = () => {
                 key={i}
                 fill={polygon.color}
                 className="stroke-[0.75] stroke-white hover:fill-blue-500"
-                onMouseMove={(e) => mousemove(e, polygon.properties.NAME_3)}
+                onMouseMove={(e) => mousemove(e, polygon.properties.NAME_2)}
               />
             ))}
           </g>
